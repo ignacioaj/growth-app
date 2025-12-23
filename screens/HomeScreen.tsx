@@ -21,7 +21,7 @@ const colors = {
   calmGreen: '#6FAF8E',
   trustBlue: '#6B8EF2',
   softRed: '#C97A7A',
-  darkPink: '#8B1E3F', // rosa oscuro más visible
+  darkPink: '#8B1E3F',
 };
 
 export default function HomeScreen() {
@@ -74,11 +74,17 @@ export default function HomeScreen() {
             <View style={styles.inputShadow}>
               <TextInput
                 style={styles.input}
-                placeholder="Escribe un comentario (opcional)"
+                placeholder="Escribe un breve comentario (opcional)"
                 placeholderTextColor={colors.textTertiary}
                 value={inputText}
                 onChangeText={setInputText}
-                multiline
+                multiline={false}          // evita saltos de línea
+                blurOnSubmit={true}        // cierra teclado al pulsar Enter
+                returnKeyType="done"       // botón Enter como "Done"
+                onSubmitEditing={() => {
+                  // opcional: acciones adicionales al cerrar teclado
+                  console.log('Teclado cerrado');
+                }}
               />
             </View>
           </View>
