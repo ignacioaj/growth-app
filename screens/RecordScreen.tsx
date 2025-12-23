@@ -55,7 +55,6 @@ export default function RecordScreen() {
 
   const handlePressRecord = (record: Record) => {
     if (!record.comment || record.comment.trim() === '') return;
-
     setSelectedRecord(record);
     setModalVisible(true);
   };
@@ -63,13 +62,12 @@ export default function RecordScreen() {
   const handleConfirm = async () => {
     if (!selectedRecord?.id) return;
     try {
-      const newRemark = !selectedRecord.remark; // alterna destacado
+      const newRemark = !selectedRecord.remark;
       const { error } = await supabase
         .from('records')
         .update({ remark: newRemark })
         .eq('id', Number(selectedRecord.id));
       if (error) return;
-
       setModalVisible(false);
       setSelectedRecord(null);
       await fetchRecords();
@@ -85,7 +83,7 @@ export default function RecordScreen() {
 
   const groupRecordsByDate = (records: Record[]) => {
     return records.reduce((acc, record) => {
-      const date = new Date(record.date).toLocaleDateString();
+      const date = new Date(record.date).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
       if (!acc[date]) acc[date] = [];
       acc[date].push(record);
       return acc;
@@ -97,11 +95,8 @@ export default function RecordScreen() {
 
   return (
     <View style={[styles.clipContainer, { height: SCREEN_HEIGHT - TAB_HEIGHT }]}>
-      <View style={[styles.header, { height: 50 }]}>
+      <View style={[styles.header, { height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16 }]}>
         <Text style={[styles.headerTitle, { color: '#B22255' }]}>Mi diario</Text>
-      </View>
-
-      <View style={styles.filterContainer}>
         <TouchableOpacity
           style={[
             styles.filterButton,
@@ -115,7 +110,7 @@ export default function RecordScreen() {
               showOnlyRemarked ? { color: '#FFFFFF' } : { color: '#B22255' },
             ]}
           >
-            {showOnlyRemarked ? 'Mostrar todos' : 'Mostrar hitos'}
+            {showOnlyRemarked ? 'Mostrar todos' : 'Filtrar hitos'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -132,8 +127,7 @@ export default function RecordScreen() {
         {Object.entries(groupedRecords).map(([date, dailyRecords]) => (
           <View key={date}>
             <View style={styles.daySeparator}>
-              <Text style={[styles.separatorText, { color: colors.darkPink }]}>• {date}</Text>
-              <View style={[styles.separatorLine, { backgroundColor: colors.darkPink }]} />
+              <Text style={[styles.separatorText, { color: colors.darkPink }]}>{capitalizeFirstLetter(date)}</Text>
             </View>
 
             {dailyRecords.map((r) => (
@@ -203,7 +197,6 @@ const styles = StyleSheet.create({
   clipContainer: { flex: 1, overflow: 'hidden', marginBottom: 60 },
   header: { paddingLeft: 16 },
   headerTitle: { fontSize: 24, fontWeight: '700', letterSpacing: 0.2 },
-  filterContainer: { paddingHorizontal: 16, marginVertical: 8, flexDirection: 'row' },
   filterButton: { paddingVertical: 6, paddingHorizontal: 14, borderRadius: 12 },
   filterText: { fontSize: 14, fontWeight: '500' },
   noRecords: { color: colors.textSecondary, textAlign: 'center', fontSize: 14 },
@@ -215,8 +208,7 @@ const styles = StyleSheet.create({
   comment: { fontSize: 13, color: colors.textPrimary, marginTop: 4, lineHeight: 18 },
   remarkContainer: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8 },
   remarkLabel: { fontSize: 12, fontWeight: '600' },
-  daySeparator: { flexDirection: 'row', alignItems: 'center', marginVertical: 16 },
-  separatorLine: { flex: 1, height: 0.8, marginLeft: 8 },
+  daySeparator: { marginVertical: 16 },
   separatorText: { fontSize: 12, fontWeight: '600', textAlign: 'left' },
 });
 
@@ -227,4 +219,8 @@ function getColor(type: string) {
     case 'Sí complaciente': return colors.softRed;
     default: return colors.textPrimary;
   }
+}
+
+function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
