@@ -56,7 +56,7 @@ export default function RecordScreen() {
       </View>
 
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 5 }}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
