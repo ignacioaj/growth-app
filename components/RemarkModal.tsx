@@ -1,55 +1,37 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  Platform,
-  StatusBar,
-  ScrollView,
-} from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Platform, StatusBar, ScrollView } from 'react-native';
 
 const colors = {
   overlay: 'rgba(0,0,0,0.28)',
   card: '#FFFFFF',
   textPrimary: '#1F2933',
   textSecondary: '#6B7280',
-  calmGreen: '#6BD17F',
+  calmGreen: '#6FAF8E',
   trustBlue: '#6B8EF2',
-  softRed: '#B00020',
+  softRed: '#C97A7A',
   neutralButton: '#F2F3F7',
   commentBackground: '#F9F9F9',
 };
 
-interface ConfirmModalProps {
+interface RemarkModalProps {
   visible: boolean;
   type: string;
-  message?: string;
+  comment?: string;
+  alreadyRemarked?: boolean;
   onConfirm?: () => void;
   onCancel?: () => void;
 }
 
 const getTypeColor = (type: string) => {
   switch (type) {
-    case 'No incómodo':
-      return colors.calmGreen;
-    case 'Sí incómodo':
-      return colors.trustBlue;
-    case 'Sí complaciente':
-      return colors.softRed;
-    default:
-      return colors.textPrimary;
+    case 'No incómodo': return colors.calmGreen;
+    case 'Sí incómodo': return colors.trustBlue;
+    case 'Sí complaciente': return colors.softRed;
+    default: return colors.textPrimary;
   }
 };
 
-export default function ConfirmModal({
-  visible,
-  type,
-  message,
-  onConfirm,
-  onCancel,
-}: ConfirmModalProps) {
+export default function RemarkModal({ visible, type, comment, alreadyRemarked = false, onConfirm, onCancel }: RemarkModalProps) {
   return (
     <Modal
       transparent
@@ -60,27 +42,31 @@ export default function ConfirmModal({
     >
       <View style={styles.overlay}>
         <View style={styles.card}>
-          <Text style={styles.title}>Confirmar elección</Text>
+          <Text style={styles.title}>{alreadyRemarked ? 'Quitar de destacados' : 'Recordar este suceso'}</Text>
           <Text style={styles.subtitle}>
-            Esta ha sido tu reacción ante lo sucedido.
+            {alreadyRemarked
+              ? '¿Quieres quitar este suceso de tus hitos?'
+              : '¿Quieres destacar este\nsuceso en tu diario?'}
           </Text>
 
           <Text style={[styles.typeLabel, { color: getTypeColor(type) }]}>{type}</Text>
 
-          {message ? (
+          {comment ? (
             <View style={styles.commentBox}>
               <ScrollView>
-                <Text style={styles.comment}>{message}</Text>
+                <Text style={styles.comment}>{comment}</Text>
               </ScrollView>
             </View>
           ) : null}
 
           <View style={styles.actions}>
             <TouchableOpacity style={styles.secondaryButton} onPress={onCancel}>
-              <Text style={styles.secondaryText}>Volver atrás</Text>
+              <Text style={styles.secondaryText}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.primaryButton} onPress={onConfirm}>
-              <Text style={styles.primaryText}>Confirmar</Text>
+              <Text style={styles.primaryText}>
+                {alreadyRemarked ? 'Sí, quitar' : 'Sí, recordar'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

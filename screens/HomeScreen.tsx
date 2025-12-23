@@ -92,7 +92,7 @@ export default function HomeScreen() {
               <ReactionButton
                 type="No incómodo"
                 subtitle="Priorizaste tus límites"
-                color={colors.calmGreen} // verde TugOfWar
+                color={colors.calmGreen}
                 onPress={handlePress}
               />
               <ReactionButton
@@ -104,7 +104,7 @@ export default function HomeScreen() {
               <ReactionButton
                 type="Sí complaciente"
                 subtitle="Elegiste evitar el conflicto"
-                color={colors.softRed} // rojo TugOfWar
+                color={colors.softRed}
                 onPress={handlePress}
               />
             </View>
@@ -115,6 +115,7 @@ export default function HomeScreen() {
       <ConfirmModal
         visible={modalVisible}
         type={selectedType}
+        message={inputText}  // <-- pasamos el comentario aquí
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
