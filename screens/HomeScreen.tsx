@@ -18,9 +18,9 @@ const colors = {
   textPrimary: '#1F2933',
   textSecondary: '#6B7280',
   textTertiary: '#9CA3AF',
-  calmGreen: '#6FAF8E',
+  calmGreen: '#6BD17F', // verde TugOfWar
   trustBlue: '#6B8EF2',
-  softRed: '#C97A7A',
+  softRed: '#B00020',   // rojo TugOfWar
   darkPink: '#8B1E3F',
 };
 
@@ -78,13 +78,9 @@ export default function HomeScreen() {
                 placeholderTextColor={colors.textTertiary}
                 value={inputText}
                 onChangeText={setInputText}
-                multiline={false}          // evita saltos de línea
-                blurOnSubmit={true}        // cierra teclado al pulsar Enter
-                returnKeyType="done"       // botón Enter como "Done"
-                onSubmitEditing={() => {
-                  // opcional: acciones adicionales al cerrar teclado
-                  console.log('Teclado cerrado');
-                }}
+                multiline={false}
+                blurOnSubmit={true}
+                returnKeyType="done"
               />
             </View>
           </View>
@@ -96,7 +92,7 @@ export default function HomeScreen() {
               <ReactionButton
                 type="No incómodo"
                 subtitle="Priorizaste tus límites"
-                color={colors.calmGreen}
+                color={colors.calmGreen} // verde TugOfWar
                 onPress={handlePress}
               />
               <ReactionButton
@@ -108,7 +104,7 @@ export default function HomeScreen() {
               <ReactionButton
                 type="Sí complaciente"
                 subtitle="Elegiste evitar el conflicto"
-                color={colors.softRed}
+                color={colors.softRed} // rojo TugOfWar
                 onPress={handlePress}
               />
             </View>
