@@ -18,8 +18,8 @@ const TugOfWarBox = () => {
     <View style={styles.shadowWrapper}>
       <View style={styles.card}>
         <View style={styles.header}>
-          <Text style={styles.eyebrow}>Resumen del mes</Text>
           <Text style={styles.title}>{title}</Text>
+          <Text style={styles.eyebrow}>Resumen del mes</Text>
         </View>
 
         <View style={styles.metrics}>

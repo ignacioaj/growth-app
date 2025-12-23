@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { View, ScrollView, Text, StyleSheet, RefreshControl, Dimensions, TouchableOpacity, Animated, Easing } from 'react-native';
 import { supabase } from '../supabaseClient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import RemarkModal from '../components/RemarkModal';
 
 interface Record {
@@ -21,9 +20,6 @@ const colors = {
   softRed: '#C97A7A',
   darkPink: '#D6336C',
   grayDate: '#9CA3AF',
-  goldLight: '#FFF8E1',
-  buttonBg: '#FFE3EC',
-  buttonActive: '#D6336C',
 };
 
 export default function RecordScreen() {
@@ -33,7 +29,6 @@ export default function RecordScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [showOnlyRemarked, setShowOnlyRemarked] = useState(false);
 
-  const insets = useSafeAreaInsets();
   const TAB_HEIGHT = 80;
   const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -181,10 +176,14 @@ const RecordCard = ({ record, onPress }: { record: Record; onPress: () => void }
             <Text style={[styles.recordType, { color: getColor(record.type) }]}>{record.type}</Text>
             <Text style={styles.recordDateCard}>{new Date(record.date).toLocaleDateString()}</Text>
           </View>
-          {record.comment ? <Text style={styles.comment}>{record.comment}</Text> : null}
-          {record.remark && (
-            <View style={styles.remarkContainer}>
-              <Text style={[styles.remarkLabel, { color: colors.darkPink }]}>Hito</Text>
+          {record.comment && (
+            <View style={styles.commentRow}>
+              <Text style={styles.comment}>{record.comment}</Text>
+              {record.remark && (
+                <View style={styles.remarkBadge}>
+                  <Text style={styles.remarkLabel}>Hito</Text>
+                </View>
+              )}
             </View>
           )}
         </Animated.View>
@@ -201,13 +200,19 @@ const styles = StyleSheet.create({
   filterText: { fontSize: 14, fontWeight: '500' },
   noRecords: { color: colors.textSecondary, textAlign: 'center', fontSize: 14 },
   shadowWrapper: { borderRadius: 12, marginBottom: 12, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6, elevation: 2 },
-  recordItem: { borderRadius: 12, paddingVertical: 12, paddingHorizontal: 16 },
+  recordItem: {
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    position: 'relative'
+  },
   recordHeaderCard: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   recordType: { fontWeight: '600', fontSize: 14 },
   recordDateCard: { fontSize: 12, color: colors.grayDate },
-  comment: { fontSize: 13, color: colors.textPrimary, marginTop: 4, lineHeight: 18 },
-  remarkContainer: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: 8 },
-  remarkLabel: { fontSize: 12, fontWeight: '600' },
+  commentRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 },
+  comment: { fontSize: 13, color: colors.textPrimary, lineHeight: 18, flex: 1 },
+  remarkBadge: { backgroundColor: colors.darkPink, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, marginLeft: 8 },
+  remarkLabel: { fontSize: 10, fontWeight: '600', color: '#FFF' },
   daySeparator: { marginVertical: 16 },
   separatorText: { fontSize: 12, fontWeight: '600', textAlign: 'left' },
 });

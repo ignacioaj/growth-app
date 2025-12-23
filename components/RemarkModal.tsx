@@ -65,7 +65,7 @@ export default function RemarkModal({ visible, type, comment, alreadyRemarked = 
             </TouchableOpacity>
             <TouchableOpacity style={styles.primaryButton} onPress={onConfirm}>
               <Text style={styles.primaryText}>
-                {alreadyRemarked ? 'Sí, quitar' : 'Sí, recordar'}
+                {alreadyRemarked ? 'Sí, quitar' : 'Sí, destacar'}
               </Text>
             </TouchableOpacity>
           </View>
