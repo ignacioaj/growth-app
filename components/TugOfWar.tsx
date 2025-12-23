@@ -14,7 +14,7 @@ const colors = {
   trackBg: '#E5E7EB',
   bad: '#B00020',
   warn: '#F2C849',
-  good: '#4AA96C',
+  good: '#6BD17F', // verde más clarito y saturado
 };
 
 const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric, thresholds = [0.25, 0.5] }) => {
