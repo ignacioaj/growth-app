@@ -9,48 +9,46 @@ interface TugOfWarProps {
 
 const colors = {
   textSecondary: '#6B7280',
-  textTertiary: '#9CA3AF',
+  textSecondaryLight: '#D1D5DB', // más clarito
   trackBg: '#E5E7EB',
 
-  greenSoft: '#7FB7A1',
-  greenMuted: '#5F9E85',
-
-  blueSoft: '#7A97E8',
-  blueMuted: '#5E7BD6',
-
-  amberSoft: '#E2C48F',
-  amberMuted: '#C9A764',
+  pinkDark: '#D63384',
+  orangeSoft: '#E2C48F',
+  orangeMuted: '#C9A764',
 };
 
 const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
   const width = 260;
-  const height = 3; // reducido
-  const ballRadius = 5; // reducido
+  const height = 3;
+  const ballRadius = 5;
 
   const clampedMetric = Math.min(Math.max(metric, 0), 1);
   const ballX = clampedMetric * width;
 
   let leftLabel = '';
   let rightLabel = '';
-  let gradientColors: [string, string] = [colors.greenMuted, colors.greenSoft];
 
   switch (mode) {
     case 'type1':
       leftLabel = 'Complaciente';
       rightLabel = 'Asertivo';
-      gradientColors = [colors.greenMuted, colors.greenSoft];
       break;
     case 'type2':
       leftLabel = 'Acomodado';
       rightLabel = 'Activo';
-      gradientColors = [colors.blueMuted, colors.blueSoft];
       break;
     case 'type3':
       leftLabel = 'Estancado';
       rightLabel = 'En crecimiento';
-      gradientColors = [colors.amberMuted, colors.amberSoft];
       break;
   }
+
+  const gradientColors: [string, string] = clampedMetric <= 0.5
+    ? [colors.orangeMuted, colors.orangeSoft]
+    : [colors.pinkDark, colors.pinkDark];
+
+  const leftColor = clampedMetric <= 0.5 ? colors.pinkDark : colors.textSecondaryLight;
+  const rightColor = clampedMetric > 0.5 ? colors.pinkDark : colors.textSecondaryLight;
 
   return (
     <View style={styles.container}>
@@ -69,8 +67,8 @@ const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
       </Svg>
 
       <View style={[styles.labels, { width }]}>
-        <Text style={styles.labelLeft}>{leftLabel}</Text>
-        <Text style={styles.labelRight}>{rightLabel}</Text>
+        <Text style={[styles.labelLeft, { color: leftColor }]}>{leftLabel}</Text>
+        <Text style={[styles.labelRight, { color: rightColor }]}>{rightLabel}</Text>
       </View>
     </View>
   );
@@ -79,22 +77,20 @@ const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingVertical: 2, // reducido
+    paddingVertical: 2,
   },
   labels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 2, // reducido
+    marginTop: 2,
   },
   labelLeft: {
-    fontSize: 11, // reducido
+    fontSize: 11,
     fontWeight: '500',
-    color: colors.textTertiary,
   },
   labelRight: {
-    fontSize: 11, // reducido
+    fontSize: 11,
     fontWeight: '500',
-    color: colors.textSecondary,
   },
 });
 

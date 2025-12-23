@@ -1,54 +1,65 @@
-// TabNavigator.tsx
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Feather } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MaterialIcons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import RecordScreen from '../screens/RecordScreen';
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
-  const insets = useSafeAreaInsets();
-
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: '#444',
-        tabBarInactiveTintColor: '#AAA',
         tabBarStyle: {
           position: 'absolute',
+          bottom: -8, // 🔹 baja toda la barra un poco más
           left: 0,
           right: 0,
-          bottom: 0,
-          height: 50,
-          paddingBottom: insets.bottom,
+          height: 80,
           backgroundColor: 'transparent',
           borderTopWidth: 0,
           elevation: 0,
-          shadowOpacity: 0,
+          paddingBottom: 8,
         },
-        tabBarItemStyle: { paddingVertical: 4 },
-        tabBarIcon: ({ focused, color }) => {
-          let iconName: keyof typeof Feather.glyphMap =
-            route.name === 'Home' ? 'home' :
-            route.name === 'Record' ? 'file' : 'circle';
-          return (
-            <Feather
-              name={iconName}
-              size={20}
-              color={color}
-              style={{ opacity: focused ? 1 : 0.6 }}
-            />
-          );
+        tabBarActiveTintColor: '#641621',
+        tabBarInactiveTintColor: '#64162188',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          marginBottom: 4,
         },
-        cardStyle: { backgroundColor: 'transparent' },
-      })}
+        tabBarIconStyle: {
+          marginTop: 18,
+        },
+      }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Record" component={RecordScreen} />
+      <Tab.Screen
+        name="Inicio"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="home-filled" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Registros"
+        component={RecordScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="menu-book" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Progreso"
+        component={RecordScreen} // de momento apunta a RecordScreen
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="bar-chart" size={size} color={color} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }

@@ -9,7 +9,7 @@ const AppTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: 'transparent', // no sobrescriba el fondo
+    background: 'transparent',
     card: '#FFFFFF',
     text: '#1F2933',
     border: 'transparent',
@@ -21,7 +21,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ImageBackground
-        source={require('./assets/background.jpg')} // tu fondo
+        source={require('./assets/background.jpg')}
         style={styles.background}
         resizeMode="cover"
       >
@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   overlay: {
     flex: 1,
-    backgroundColor: 'transparent', // fondo visible
-    paddingHorizontal: 16,           // márgenes laterales
-    paddingTop: 24,                  // margen superior
-    paddingBottom: 16,               // margen inferior
+    backgroundColor: 'transparent',
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    // paddingBottom: 16, <-- eliminamos este padding para que los labels se vean
   },
 });
