@@ -1,7 +1,7 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, StyleSheet, ImageBackground } from 'react-native';
 import TabNavigator from './components/TabNavigator';
 
@@ -17,6 +17,25 @@ const AppTheme = {
   },
 };
 
+// Componente que envuelve el contenido usando los insets
+const SafeAreaWrapper: React.FC = ({ children }) => {
+  const insets = useSafeAreaInsets();
+
+  return (
+    <View
+      style={[
+        styles.overlay,
+        {
+          paddingTop: insets.top + 24, // Ajuste dinámico para la navbar
+          paddingBottom: insets.bottom, // Evita que quede debajo del home indicator
+        },
+      ]}
+    >
+      {children}
+    </View>
+  );
+};
+
 export default function App() {
   return (
     <SafeAreaProvider>
@@ -25,14 +44,12 @@ export default function App() {
         style={styles.background}
         resizeMode="cover"
       >
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.overlay}>
-            <NavigationContainer theme={AppTheme}>
-              <StatusBar style="dark" />
-              <TabNavigator />
-            </NavigationContainer>
-          </View>
-        </SafeAreaView>
+        <SafeAreaWrapper>
+          <NavigationContainer theme={AppTheme}>
+            <StatusBar style="dark" />
+            <TabNavigator />
+          </NavigationContainer>
+        </SafeAreaWrapper>
       </ImageBackground>
     </SafeAreaProvider>
   );
@@ -40,11 +57,9 @@ export default function App() {
 
 const styles = StyleSheet.create({
   background: { flex: 1 },
-  safeArea: { flex: 1 },
   overlay: {
     flex: 1,
     backgroundColor: 'transparent',
     paddingHorizontal: 16,
-    paddingTop: 24,
   },
 });

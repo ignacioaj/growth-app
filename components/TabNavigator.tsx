@@ -13,23 +13,23 @@ export default function TabNavigator() {
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: -12, // 🔹 baja toda la barra un poco más
+          bottom: -12,
           left: 0,
           right: 0,
           height: 80,
           backgroundColor: 'transparent',
           borderTopWidth: 0,
           elevation: 0,
-          paddingBottom: 12, // 🔹 espacio inferior para iconos
+          paddingBottom: 12,
         },
         tabBarActiveTintColor: '#641621',
         tabBarInactiveTintColor: '#64162188',
         tabBarLabelStyle: {
-          fontSize: 12,
-          marginBottom: 6, // 🔹 un poco más abajo
+          fontSize: 11,
+          marginBottom: 6,
         },
         tabBarIconStyle: {
-          marginTop: 20, // 🔹 iconos más bajos
+          marginTop: 20,
         },
       }}
     >
@@ -53,7 +53,7 @@ export default function TabNavigator() {
       />
       <Tab.Screen
         name="Progreso"
-        component={RecordScreen} // de momento apunta a RecordScreen
+        component={RecordScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="bar-chart" size={size} color={color} />
