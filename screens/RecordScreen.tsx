@@ -19,7 +19,6 @@ export default function RecordScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const insets = useSafeAreaInsets();
   const TAB_HEIGHT = 80;
-
   const SCREEN_HEIGHT = Dimensions.get('window').height;
 
   const fetchRegistros = useCallback(async () => {
@@ -49,7 +48,6 @@ export default function RecordScreen() {
   };
 
   return (
-    // Contenedor limitado en altura para recortar scroll
     <View style={[styles.clipContainer, { height: SCREEN_HEIGHT - TAB_HEIGHT - insets.bottom }]}>
       <ScrollView
         contentContainerStyle={styles.container}
@@ -89,24 +87,24 @@ export default function RecordScreen() {
 }
 
 const styles = StyleSheet.create({
-  clipContainer: { overflow: 'hidden', flex: 1 }, // recorta cualquier contenido que exceda
-  container: { paddingHorizontal: 18, paddingTop: 28, paddingBottom: 16 },
-  header: { marginBottom: 24 },
-  headerTitle: { fontSize: 28, fontWeight: '700', color: colors.textPrimary, letterSpacing: 0.3 },
-  noRecords: { color: colors.textSecondary, textAlign: 'center', marginTop: 32, fontSize: 16 },
+  clipContainer: { overflow: 'hidden', flex: 1 },
+  container: { paddingHorizontal: 12, paddingTop: 16, paddingBottom: 12 },
+  header: { marginBottom: 16 },
+  headerTitle: { fontSize: 22, fontWeight: '700', color: colors.textPrimary, letterSpacing: 0.2 },
+  noRecords: { color: colors.textSecondary, textAlign: 'center', marginTop: 16, fontSize: 14 },
   shadowWrapper: {
-    borderRadius: 18,
-    marginBottom: 16,
+    borderRadius: 12,
+    marginBottom: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.035,
-    shadowRadius: 12,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 6,
+    elevation: 1,
     backgroundColor: 'transparent',
   },
-  recordItem: { backgroundColor: colors.card, borderRadius: 18, paddingVertical: 14, paddingHorizontal: 16 },
-  recordHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  recordType: { fontWeight: '600', fontSize: 15 },
-  recordDate: { fontSize: 12, color: colors.textSecondary },
-  comment: { fontSize: 14, color: colors.textPrimary, marginTop: 6, lineHeight: 20 },
+  recordItem: { backgroundColor: colors.card, borderRadius: 12, paddingVertical: 10, paddingHorizontal: 12 },
+  recordHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
+  recordType: { fontWeight: '600', fontSize: 13 },
+  recordDate: { fontSize: 11, color: colors.textSecondary },
+  comment: { fontSize: 12, color: colors.textPrimary, marginTop: 4, lineHeight: 16 },
 });

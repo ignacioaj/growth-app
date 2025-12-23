@@ -46,6 +46,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingHorizontal: 16,
     paddingTop: 24,
-    // paddingBottom: 16, <-- eliminamos este padding para que los labels se vean
   },
 });
