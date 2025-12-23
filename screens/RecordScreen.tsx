@@ -98,7 +98,7 @@ export default function RecordScreen() {
   return (
     <View style={[styles.clipContainer, { height: SCREEN_HEIGHT - TAB_HEIGHT }]}>
       <View style={[styles.header, { height: 50 }]}>
-        <Text style={[styles.headerTitle, { color: colors.darkPink }]}>Mi diario</Text>
+        <Text style={[styles.headerTitle, { color: '#B22255' }]}>Mi diario</Text>
       </View>
 
       <View style={styles.filterContainer}>
@@ -112,7 +112,7 @@ export default function RecordScreen() {
           <Text
             style={[
               styles.filterText,
-              showOnlyRemarked ? { color: '#FFFFFF' } : { color: colors.darkPink },
+              showOnlyRemarked ? { color: '#FFFFFF' } : { color: '#B22255' },
             ]}
           >
             {showOnlyRemarked ? 'Mostrar todos' : 'Mostrar hitos'}
