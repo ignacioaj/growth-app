@@ -1,22 +1,23 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import Svg, { Rect, Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
+import Svg, { Rect, Circle } from 'react-native-svg';
 
 interface TugOfWarProps {
   mode: 'type1' | 'type2' | 'type3';
   metric: number;
+  thresholds?: [number, number];
 }
 
 const colors = {
   textSecondary: '#6B7280',
   textSecondaryLight: '#D1D5DB',
   trackBg: '#E5E7EB',
-  pinkDark: '#D63384',
-  orangeSoft: '#E2C48F',
-  orangeMuted: '#C9A764',
+  bad: '#B00020',
+  warn: '#F2C849',
+  good: '#4AA96C',
 };
 
-const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
+const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric, thresholds = [0.25, 0.5] }) => {
   const width = 220;
   const height = 3;
   const ballRadius = 5;
@@ -46,15 +47,15 @@ const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
       break;
   }
 
-  const gradientColors: [string, string] =
-    clampedMetric <= 0.5
-      ? [colors.orangeMuted, colors.orangeSoft]
-      : [colors.pinkDark, colors.pinkDark];
+  let metricColor = colors.bad;
+  if (clampedMetric > thresholds[1]) {
+    metricColor = colors.good;
+  } else if (clampedMetric > thresholds[0]) {
+    metricColor = colors.warn;
+  }
 
-  const leftColor =
-    clampedMetric <= 0.5 ? colors.pinkDark : colors.textSecondaryLight;
-  const rightColor =
-    clampedMetric > 0.5 ? colors.pinkDark : colors.textSecondaryLight;
+  const leftColor = clampedMetric <= thresholds[1] ? colors.textSecondary : colors.textSecondaryLight;
+  const rightColor = clampedMetric > thresholds[1] ? colors.textSecondary : colors.textSecondaryLight;
 
   return (
     <View style={styles.container}>
@@ -62,14 +63,8 @@ const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
         <Text style={styles.emoji}>{emoji}</Text>
         <View>
           <Svg width={width} height={ballRadius * 2 + height}>
-            <Defs>
-              <LinearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
-                <Stop offset="0%" stopColor={gradientColors[0]} />
-                <Stop offset="100%" stopColor={gradientColors[1]} />
-              </LinearGradient>
-            </Defs>
             <Rect x={0} y={ballRadius} width={width} height={height} rx={height / 2} fill={colors.trackBg} />
-            <Rect x={0} y={ballRadius} width={ballX} height={height} rx={height / 2} fill="url(#gradient)" />
+            <Rect x={0} y={ballRadius} width={ballX} height={height} rx={height / 2} fill={metricColor} />
             <Circle cx={ballX} cy={ballRadius + height / 2} r={ballRadius} fill="#FFF" stroke="rgba(0,0,0,0.08)" strokeWidth={1} />
           </Svg>
           <View style={[styles.labels, { width }]}>

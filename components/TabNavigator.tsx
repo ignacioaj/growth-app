@@ -43,7 +43,7 @@ export default function TabNavigator() {
         }}
       />
       <Tab.Screen
-        name="Registros"
+        name="Diario"
         component={RecordScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -57,6 +57,15 @@ export default function TabNavigator() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="bar-chart" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Perfil"
+        component={RecordScreen} // temporal hasta crear la screen real
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="person" size={size} color={color} />
           ),
         }}
       />

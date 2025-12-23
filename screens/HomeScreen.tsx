@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 15,
     fontWeight: '600',
-    color: colors.darkPink, // rosa oscuro visible
+    color: colors.darkPink,
     marginBottom: 12,
   },
   inputShadow: {
