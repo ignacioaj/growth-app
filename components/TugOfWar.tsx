@@ -24,8 +24,8 @@ const colors = {
 
 const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
   const width = 260;
-  const height = 4;
-  const ballRadius = 6;
+  const height = 3; // reducido
+  const ballRadius = 5; // reducido
 
   const clampedMetric = Math.min(Math.max(metric, 0), 1);
   const ballX = clampedMetric * width;
@@ -62,38 +62,12 @@ const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
           </LinearGradient>
         </Defs>
 
-        {/* Track */}
-        <Rect
-          x={0}
-          y={ballRadius}
-          width={width}
-          height={height}
-          rx={height / 2}
-          fill={colors.trackBg}
-        />
+        <Rect x={0} y={ballRadius} width={width} height={height} rx={height / 2} fill={colors.trackBg} />
+        <Rect x={0} y={ballRadius} width={ballX} height={height} rx={height / 2} fill="url(#gradient)" />
 
-        {/* Progress */}
-        <Rect
-          x={0}
-          y={ballRadius}
-          width={ballX}
-          height={height}
-          rx={height / 2}
-          fill="url(#gradient)"
-        />
-
-        {/* Indicator */}
-        <Circle
-          cx={ballX}
-          cy={ballRadius + height / 2}
-          r={ballRadius}
-          fill="#FFFFFF"
-          stroke="rgba(0,0,0,0.08)"
-          strokeWidth={1}
-        />
+        <Circle cx={ballX} cy={ballRadius + height / 2} r={ballRadius} fill="#FFF" stroke="rgba(0,0,0,0.08)" strokeWidth={1} />
       </Svg>
 
-      {/* Labels */}
       <View style={[styles.labels, { width }]}>
         <Text style={styles.labelLeft}>{leftLabel}</Text>
         <Text style={styles.labelRight}>{rightLabel}</Text>
@@ -105,20 +79,20 @@ const TugOfWar: React.FC<TugOfWarProps> = ({ mode, metric }) => {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingVertical: 4, // reducido de 8 a 4
+    paddingVertical: 2, // reducido
   },
   labels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 4, // reducido de 8 a 4
+    marginTop: 2, // reducido
   },
   labelLeft: {
-    fontSize: 12,
+    fontSize: 11, // reducido
     fontWeight: '500',
     color: colors.textTertiary,
   },
   labelRight: {
-    fontSize: 12,
+    fontSize: 11, // reducido
     fontWeight: '500',
     color: colors.textSecondary,
   },

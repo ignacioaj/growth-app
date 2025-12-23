@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,13 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native'
-import ConfirmModal from '../components/ConfirmModal'
-import TugOfWarBox from '../components/TugOfWarBox'
-import { supabase } from '../supabaseClient'
+} from 'react-native';
+import ConfirmModal from '../components/ConfirmModal';
+import TugOfWarBox from '../components/TugOfWarBox';
+import { supabase } from '../supabaseClient';
 
 const colors = {
-  bg: '#F8F9FB',
+  bg: 'transparent',
   card: '#FFFFFF',
   textPrimary: '#1F2933',
   textSecondary: '#6B7280',
@@ -21,40 +21,39 @@ const colors = {
   calmGreen: '#6FAF8E',
   trustBlue: '#6B8EF2',
   softRed: '#C97A7A',
-}
+  darkPink: '#8B1E3F', // rosa oscuro más visible
+};
 
 export default function HomeScreen() {
-  const [inputText, setInputText] = useState('')
-  const [modalVisible, setModalVisible] = useState(false)
-  const [selectedType, setSelectedType] = useState('')
+  const [inputText, setInputText] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedType, setSelectedType] = useState('');
 
-  const contentRef = useRef<View>(null)
-
-  const handlePress = (tipo) => {
-    setSelectedType(tipo)
-    setModalVisible(true)
-  }
+  const handlePress = (type: string) => {
+    setSelectedType(type);
+    setModalVisible(true);
+  };
 
   const handleConfirm = async () => {
-    if (!selectedType) return
+    if (!selectedType) return;
 
-    const newRegistro = {
-      type: selectedType,
-      comment: inputText,
-      date: new Date().toISOString(),
-    }
+    await supabase.from('registros').insert([
+      {
+        type: selectedType,
+        comment: inputText,
+        date: new Date().toISOString(),
+      },
+    ]);
 
-    await supabase.from('registros').insert([newRegistro])
-
-    setModalVisible(false)
-    setSelectedType('')
-    setInputText('')
-  }
+    setModalVisible(false);
+    setSelectedType('');
+    setInputText('');
+  };
 
   const handleCancel = () => {
-    setModalVisible(false)
-    setSelectedType('')
-  }
+    setModalVisible(false);
+    setSelectedType('');
+  };
 
   return (
     <>
@@ -63,20 +62,19 @@ export default function HomeScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 24 : 0}
       >
-        {/* Contenedor principal sin Scroll */}
-        <View style={styles.container} ref={contentRef}>
-          {/* Insight */}
+        <View style={styles.container}>
+          {/* Tug of War Box */}
           <View style={styles.section}>
             <TugOfWarBox />
           </View>
 
-          {/* Reflexión */}
+          {/* Comentario */}
           <View style={styles.section}>
             <Text style={styles.label}>¿Qué te ha ocurrido hoy?</Text>
             <View style={styles.inputShadow}>
               <TextInput
                 style={styles.input}
-                placeholder="Puedes escribir un comentario (opcional)"
+                placeholder="Escribe un comentario (opcional)"
                 placeholderTextColor={colors.textTertiary}
                 value={inputText}
                 onChangeText={setInputText}
@@ -85,24 +83,24 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Decisión */}
+          {/* Reacciones */}
           <View style={styles.section}>
             <Text style={styles.label}>¿Cómo has reaccionado?</Text>
             <View style={styles.reactions}>
               <ReactionButton
-                tipo="No incómodo"
+                type="No incómodo"
                 subtitle="Priorizaste tus límites"
                 color={colors.calmGreen}
                 onPress={handlePress}
               />
               <ReactionButton
-                tipo="Sí incómodo"
-                subtitle="Saliste de tu zona de confort"
+                type="Sí incómodo"
+                subtitle="Saliste de tu zona de comfort"
                 color={colors.trustBlue}
                 onPress={handlePress}
               />
               <ReactionButton
-                tipo="Sí complaciente"
+                type="Sí complaciente"
                 subtitle="Elegiste evitar el conflicto"
                 color={colors.softRed}
                 onPress={handlePress}
@@ -114,43 +112,43 @@ export default function HomeScreen() {
 
       <ConfirmModal
         visible={modalVisible}
-        tipo={selectedType}
+        type={selectedType}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
     </>
-  )
+  );
 }
 
-const ReactionButton = ({ tipo, subtitle, color, onPress }) => (
+const ReactionButton = ({ type, subtitle, color, onPress }) => (
   <TouchableOpacity
     style={styles.reactionCard}
     activeOpacity={0.92}
-    onPress={() => onPress(tipo)}
+    onPress={() => onPress(type)}
   >
     <View style={[styles.reactionDot, { backgroundColor: color }]} />
     <View style={{ flex: 1 }}>
-      <Text style={styles.reactionTitle}>{tipo}</Text>
+      <Text style={styles.reactionTitle}>{type}</Text>
       <Text style={styles.reactionSubtitle}>{subtitle}</Text>
     </View>
   </TouchableOpacity>
-)
+);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.bg,
+    backgroundColor: 'transparent',
     paddingHorizontal: 18,
-    paddingTop: 28,
-    paddingBottom: 56, // espacio para tab bar
+    paddingTop: 16,
+    paddingBottom: 56,
   },
   section: {
-    marginBottom: 28,
+    marginBottom: 20,
   },
   label: {
     fontSize: 15,
     fontWeight: '600',
-    color: colors.textPrimary,
+    color: colors.darkPink, // rosa oscuro visible
     marginBottom: 12,
   },
   inputShadow: {
@@ -172,9 +170,7 @@ const styles = StyleSheet.create({
     minHeight: 50,
     lineHeight: 20,
   },
-  reactions: {
-    gap: 12,
-  },
+  reactions: { gap: 12 },
   reactionCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -189,19 +185,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
   },
-  reactionDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  reactionTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.textPrimary,
-  },
-  reactionSubtitle: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-})
+  reactionDot: { width: 8, height: 8, borderRadius: 4 },
+  reactionTitle: { fontSize: 15, fontWeight: '600', color: colors.textPrimary },
+  reactionSubtitle: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
+});

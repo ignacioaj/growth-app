@@ -2,44 +2,50 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ImageBackground } from 'react-native';
 import TabNavigator from './components/TabNavigator';
 
 const AppTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: '#F8F9FB', // fondo premium suave
-    card: '#FFFFFF',        // tarjetas y barras blancas
-    text: '#1F2933',        // texto principal oscuro y elegante
-    border: 'transparent',  // sin bordes duros
-    notification: '#5E7BD6', // acento premium
+    background: 'transparent', // no sobrescriba el fondo
+    card: '#FFFFFF',
+    text: '#1F2933',
+    border: 'transparent',
+    notification: '#5E7BD6',
   },
 };
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-        <NavigationContainer theme={AppTheme}>
-          <StatusBar style="dark" />
-          <View style={styles.wrapper}>
-            <TabNavigator />
+      <ImageBackground
+        source={require('./assets/background.jpg')} // tu fondo
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.overlay}>
+            <NavigationContainer theme={AppTheme}>
+              <StatusBar style="dark" />
+              <TabNavigator />
+            </NavigationContainer>
           </View>
-        </NavigationContainer>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ImageBackground>
     </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  background: { flex: 1 },
+  safeArea: { flex: 1 },
+  overlay: {
     flex: 1,
-    backgroundColor: '#F8F9FB', // coincide con theme
-  },
-  wrapper: {
-    flex: 1,
-    backgroundColor: '#F8F9FB',
-    paddingHorizontal: 16,       // margen lateral premium
+    backgroundColor: 'transparent', // fondo visible
+    paddingHorizontal: 16,           // márgenes laterales
+    paddingTop: 24,                  // margen superior
+    paddingBottom: 16,               // margen inferior
   },
 });

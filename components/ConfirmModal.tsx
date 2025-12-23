@@ -29,13 +29,13 @@ const colors = {
 
 interface ConfirmModalProps {
   visible: boolean;
-  tipo: string;
+  type: string;
   onConfirm?: () => void;
   onCancel?: () => void;
 }
 
-const getTipoColor = (tipo: string) => {
-  switch (tipo) {
+const gettypeColor = (type: string) => {
+  switch (type) {
     case 'No incómodo':
       return colors.calmGreen;
     case 'Sí incómodo':
@@ -49,7 +49,7 @@ const getTipoColor = (tipo: string) => {
 
 export default function ConfirmModal({
   visible,
-  tipo,
+  type,
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
@@ -69,16 +69,16 @@ export default function ConfirmModal({
             <Text style={styles.title}>Confirmar elección</Text>
 
             <Text style={styles.subtitle}>
-              Esto es lo que has decidido hacer
+              Esta ha sido tu reacción ante lo sucedido.
             </Text>
 
             <Text
               style={[
                 styles.choice,
-                { color: getTipoColor(tipo) },
+                { color: gettypeColor(type) },
               ]}
             >
-              {tipo}
+              {type}
             </Text>
 
             {/* Actions */}
