@@ -13,23 +13,23 @@ export default function TabNavigator() {
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: -8, // 🔹 baja toda la barra un poco más
+          bottom: -12, // 🔹 baja toda la barra un poco más
           left: 0,
           right: 0,
           height: 80,
           backgroundColor: 'transparent',
           borderTopWidth: 0,
           elevation: 0,
-          paddingBottom: 8,
+          paddingBottom: 12, // 🔹 espacio inferior para iconos
         },
         tabBarActiveTintColor: '#641621',
         tabBarInactiveTintColor: '#64162188',
         tabBarLabelStyle: {
           fontSize: 12,
-          marginBottom: 4,
+          marginBottom: 6, // 🔹 un poco más abajo
         },
         tabBarIconStyle: {
-          marginTop: 18,
+          marginTop: 20, // 🔹 iconos más bajos
         },
       }}
     >
