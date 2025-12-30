@@ -9,7 +9,7 @@ interface ProfileCircleProps {
 }
 
 const defaultStories: Story[] = [
-  { id: '1', text: 'Esto es una historia de prueba!'},
+  { id: '1', text: 'Esto es una historia de prueba!'},{ id: '2', text: 'Debes hacer respetar mas tus límites'}
 ];
 
 const ProfileCircle: React.FC<ProfileCircleProps> = ({ initial = 'N', hasStories = false, size = 40 }) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Pressable } from 'react-native';
 
 export interface Story {
   id: string;
@@ -36,18 +36,15 @@ const StoryScreen: React.FC<StoryScreenProps> = ({ stories = defaultStories, onC
   );
   const [nextGradient, setNextGradient] = useState<[string, string]>(currentGradient);
 
-  useEffect(() => {
-    if (!stories || stories.length === 0) {
-      onClose();
-      return;
-    }
-
+  const startStoryAnimation = () => {
     progress.setValue(0);
     Animated.timing(progress, {
       toValue: 1,
       duration: STORY_DURATION,
       useNativeDriver: false,
-    }).start();
+    }).start(({ finished }) => {
+      if (finished) goToNextStory();
+    });
 
     textScale.setValue(1);
     Animated.loop(
@@ -63,26 +60,41 @@ const StoryScreen: React.FC<StoryScreenProps> = ({ stories = defaultStories, onC
       duration: STORY_DURATION,
       useNativeDriver: false,
     }).start();
+  };
 
-    const timer = setTimeout(() => {
-      if (currentIndex < stories.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-        setCurrentGradient(nextGradient);
-        const newGradient = gradients[Math.floor(Math.random() * gradients.length)];
-        setNextGradient(newGradient);
-      } else {
-        onClose();
-      }
-    }, STORY_DURATION);
+  useEffect(() => {
+    if (!stories || stories.length === 0) {
+      onClose();
+      return;
+    }
 
-    return () => clearTimeout(timer);
-  }, [currentIndex, stories, onClose, nextGradient]);
+    startStoryAnimation();
+  }, [currentIndex]);
 
   if (!stories || stories.length === 0) return null;
 
+  const goToNextStory = () => {
+    if (currentIndex < stories.length - 1) {
+      setCurrentGradient(nextGradient);
+      const newGradient = gradients[Math.floor(Math.random() * gradients.length)];
+      setNextGradient(newGradient);
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      onClose();
+    }
+  };
+
+  const goToPreviousStory = () => {
+    if (currentIndex > 0) {
+      setCurrentGradient(nextGradient);
+      const newGradient = gradients[Math.floor(Math.random() * gradients.length)];
+      setNextGradient(newGradient);
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
   const story = stories[currentIndex];
 
-  // Animación del fondo interpolando los dos colores
   const backgroundColor = animGradient.interpolate({
     inputRange: [0, 1],
     outputRange: [currentGradient[0], nextGradient[0]],
@@ -95,20 +107,10 @@ const StoryScreen: React.FC<StoryScreenProps> = ({ stories = defaultStories, onC
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          { backgroundColor: backgroundColor },
-        ]}
-      />
-      <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          { backgroundColor: backgroundColor2, opacity: 0.5 },
-        ]}
-      />
+      <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor }]} />
+      <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: backgroundColor2, opacity: 0.5 }]} />
 
-      <View style={styles.topBar}>
+      <View style={[styles.topBar, { top: 10 }]}> {/* Moved progress bar more up */}
         <View style={styles.progressContainer}>
           {stories.map((s, index) => {
             const widthAnim =
@@ -129,11 +131,23 @@ const StoryScreen: React.FC<StoryScreenProps> = ({ stories = defaultStories, onC
         </TouchableOpacity>
       </View>
 
-      <View style={styles.content}>
-        <Animated.Text style={[styles.storyText, { transform: [{ scale: textScale }] }]}>
-          {story.text}
-        </Animated.Text>
-      </View>
+      <Pressable
+        style={StyleSheet.absoluteFill}
+        onPress={({ nativeEvent }) => {
+          const x = nativeEvent.locationX;
+          if (x > width / 2) {
+            goToNextStory();
+          } else {
+            goToPreviousStory();
+          }
+        }}
+      >
+        <View style={styles.content}>
+          <Animated.Text style={[styles.storyText, { transform: [{ scale: textScale }] }]}>
+            {story.text}
+          </Animated.Text>
+        </View>
+      </Pressable>
     </View>
   );
 };
@@ -153,7 +167,6 @@ const styles = StyleSheet.create({
   },
   topBar: {
     position: 'absolute',
-    top: 40,
     width: '90%',
     flexDirection: 'row',
     alignItems: 'center',
