@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import ConfirmModal from '../components/ConfirmModal';
 import TugOfWarBox from '../components/TugOfWarBox';
+import GrowthRow from '../components/GrowthRow';
 import { supabase } from '../supabaseClient';
 
 const colors = {
@@ -68,7 +69,11 @@ export default function HomeScreen() {
             <TugOfWarBox />
           </View>
 
-          {/* Comentario */}
+          <View style={styles.section}>
+            <GrowthRow />
+          </View>
+
+          {/* Comentario
           <View style={styles.section}>
             <Text style={styles.label}>¿Qué te ha ocurrido hoy?</Text>
             <View style={styles.inputShadow}>
@@ -85,7 +90,6 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Reacciones */}
           <View style={styles.section}>
             <Text style={styles.label}>¿Cómo has reaccionado?</Text>
             <View style={styles.reactions}>
@@ -109,6 +113,7 @@ export default function HomeScreen() {
               />
             </View>
           </View>
+          */}
         </View>
       </KeyboardAvoidingView>
 

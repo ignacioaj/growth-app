@@ -67,7 +67,6 @@ const StoryScreen: React.FC<StoryScreenProps> = ({ stories = defaultStories, onC
       onClose();
       return;
     }
-
     startStoryAnimation();
   }, [currentIndex]);
 
@@ -110,7 +109,7 @@ const StoryScreen: React.FC<StoryScreenProps> = ({ stories = defaultStories, onC
       <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor }]} />
       <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: backgroundColor2, opacity: 0.5 }]} />
 
-      <View style={[styles.topBar, { top: 10 }]}> {/* Moved progress bar more up */}
+      <View style={[styles.topBar, { top: 10 }]}>
         <View style={styles.progressContainer}>
           {stories.map((s, index) => {
             const widthAnim =
@@ -175,8 +174,8 @@ const styles = StyleSheet.create({
   progressContainer: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginRight: 10 },
   progressBackground: { flex: 1, height: 3, backgroundColor: 'rgba(255,255,255,0.3)', marginHorizontal: 2, borderRadius: 2 },
   progressBar: { height: 3, backgroundColor: '#fff', borderRadius: 2 },
-  closeButton: { padding: 5 },
-  closeText: { fontSize: 22, fontWeight: 'bold', color: '#fff' },
+  closeButton: { padding: 3 }, // reducido
+  closeText: { fontSize: 16, fontWeight: 'bold', color: '#fff' }, // tamaño más pequeño
   content: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20 },
   storyText: { fontSize: 26, fontWeight: '700', color: '#fff', textAlign: 'center' },
 });
