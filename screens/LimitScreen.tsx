@@ -13,18 +13,18 @@ import {
 
 const colors = {
   card: '#FFFFFF',
-  textPrimary: '#1F2933',
+  textPrimary: '#C97A7A', // nombre del límite
   textSecondary: '#6B7280',
   textTertiary: '#9CA3AF',
-  calmGreen: '#6BD17F',
-  softRed: '#C97A7A',
+  alertRed: '#C97A7A',
   darkPink: '#8B1E3F',
 };
 
 interface Limit {
   id: number;
   text: string;
-  respected?: boolean;
+  defendedCount?: number;
+  notDefendedCount?: number;
 }
 
 export default function LimitsScreen() {
@@ -37,27 +37,31 @@ export default function LimitsScreen() {
 
   const addLimit = () => {
     if (!input.trim()) return;
-    setLimits(prev => [...prev, { id: Date.now(), text: input.trim() }]);
+    setLimits(prev => [
+      ...prev,
+      { id: Date.now(), text: input.trim(), defendedCount: 0, notDefendedCount: 0 },
+    ]);
     setInput('');
   };
 
-  const markLimit = (id: number, defended: boolean) => {
+  const incrementCount = (id: number, defended: boolean) => {
     setLimits(prev =>
-      prev.map(l => (l.id === id ? { ...l, respected: defended } : l))
+      prev.map(l =>
+        l.id === id
+          ? {
+              ...l,
+              defendedCount: defended ? (l.defendedCount || 0) + 1 : l.defendedCount,
+              notDefendedCount: !defended ? (l.notDefendedCount || 0) + 1 : l.notDefendedCount,
+            }
+          : l
+      )
     );
   };
 
   const filteredLimits = useMemo(() => {
-    return limits
-      .filter(limit =>
-        limit.text.toLowerCase().includes(search.toLowerCase())
-      )
-      .sort((a, b) => {
-        if (a.respected === b.respected) return 0;
-        if (a.respected === true) return -1;
-        if (a.respected === false) return 1;
-        return 0;
-      });
+    return limits.filter(limit =>
+      limit.text.toLowerCase().includes(search.toLowerCase())
+    );
   }, [limits, search]);
 
   return (
@@ -66,47 +70,47 @@ export default function LimitsScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={[styles.clipContainer, { height: SCREEN_HEIGHT - TAB_HEIGHT }]}>
-        {/* HEADER FIJO */}
-        <View style={styles.fixedHeader}>
-          <Text style={styles.title}>Mis límites</Text>
-          <Text style={styles.subtitle}>
-            Define tus líneas rojas que nadie debe pasar.
-          </Text>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Mis límites</Text>
+          <Text style={styles.subtitle}>Define tus líneas rojas que nadie debe cruzar.</Text>
 
-          <View style={styles.inputShadow}>
-            <TextInput
-              style={styles.input}
-              placeholder="Ej: No dejar que me interrumpan"
-              placeholderTextColor={colors.textTertiary}
-              value={input}
-              onChangeText={setInput}
-              returnKeyType="done"
-              onSubmitEditing={addLimit}
-            />
-          </View>
+          {/* Sección compacta: primer input + botón añadir + segundo input */}
+          <View style={{ marginBottom: 16 }}>
+            <View style={styles.inputShadow}>
+              <TextInput
+                style={styles.input}
+                placeholder="Ej: No dejar que me interrumpan"
+                placeholderTextColor={colors.textTertiary}
+                value={input}
+                onChangeText={setInput}
+                returnKeyType="done"
+                onSubmitEditing={addLimit}
+              />
+            </View>
 
-          <TouchableOpacity style={styles.addButton} onPress={addLimit}>
-            <Text style={styles.addButtonText}>Añadir límite</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={[styles.addButton, { marginTop: 8 }]} onPress={addLimit}>
+              <Text style={styles.addButtonText}>Añadir límite</Text>
+            </TouchableOpacity>
 
-          {/* Barra de búsqueda con botón de limpiar */}
-          <View style={styles.searchContainer}>
-            <TextInput
-              style={[styles.input, { flex: 1 }]}
-              placeholder="Buscar límite..."
-              placeholderTextColor={colors.textTertiary}
-              value={search}
-              onChangeText={setSearch}
-            />
-            {search.length > 0 && (
-              <TouchableOpacity onPress={() => setSearch('')} style={styles.clearButton}>
-                <Text style={styles.clearButtonText}>×</Text>
-              </TouchableOpacity>
-            )}
+            <View style={[styles.searchContainer, { marginTop: 8 }]}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Buscar límite..."
+                placeholderTextColor={colors.textTertiary}
+                value={search}
+                onChangeText={setSearch}
+              />
+              {search.length > 0 && (
+                <TouchableOpacity onPress={() => setSearch('')} style={styles.clearButton}>
+                  <Text style={styles.clearButtonText}>×</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </View>
 
-        {/* LISTA OPTIMIZADA */}
+        {/* LISTA */}
         <FlatList
           data={filteredLimits}
           keyExtractor={item => item.id.toString()}
@@ -117,40 +121,32 @@ export default function LimitsScreen() {
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
           renderItem={({ item }) => (
             <View style={styles.limitCard}>
-              <Text style={styles.limitText}>{item.text}</Text>
+              {/* Nombre del límite + alerta a la derecha */}
+              <View style={styles.limitHeader}>
+                <Text style={styles.limitText}>{item.text}</Text>
+                <View style={styles.alertBox}>
+                  <Text style={styles.alertText}>!</Text>
+                </View>
+              </View>
+
+              {/* Contador compacto */}
+              <Text style={styles.counterText}>
+                Defendido: {item.defendedCount || 0} · No defendido: {item.notDefendedCount || 0}
+              </Text>
+
               <View style={styles.actions}>
                 <TouchableOpacity
-                  style={[
-                    styles.actionButton,
-                    item.respected === true && { backgroundColor: colors.calmGreen },
-                  ]}
-                  onPress={() => markLimit(item.id, true)}
+                  style={styles.actionButton}
+                  onPress={() => incrementCount(item.id, true)}
                 >
-                  <Text
-                    style={[
-                      styles.actionText,
-                      item.respected === true && { color: '#FFF' },
-                    ]}
-                  >
-                    Lo defendí
-                  </Text>
+                  <Text style={styles.actionText}>Lo defendí</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[
-                    styles.actionButton,
-                    item.respected === false && { backgroundColor: colors.softRed },
-                  ]}
-                  onPress={() => markLimit(item.id, false)}
+                  style={styles.actionButton}
+                  onPress={() => incrementCount(item.id, false)}
                 >
-                  <Text
-                    style={[
-                      styles.actionText,
-                      item.respected === false && { color: '#FFF' },
-                    ]}
-                  >
-                    No lo defendí
-                  </Text>
+                  <Text style={styles.actionText}>No lo defendí</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -162,26 +158,24 @@ export default function LimitsScreen() {
 }
 
 const styles = StyleSheet.create({
-  clipContainer: {
-    flex: 1,
-    overflow: 'hidden',
-    marginBottom: 60,
-  },
-  fixedHeader: {
-    paddingHorizontal: 18,
+  clipContainer: { flex: 1, overflow: 'hidden', marginBottom: 60 },
+  header: {
+    paddingHorizontal: 16,
     paddingTop: 20,
     marginBottom: 12,
+    flexDirection: 'column', // mantiene flujo vertical
   },
-  title: {
-    fontSize: 22,
+  headerTitle: {
+    fontSize: 24,
     fontWeight: '700',
-    color: colors.darkPink,
-    marginBottom: 6,
+    letterSpacing: 0.2,
+    color: '#B22255', // nuevo color
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-    marginBottom: 16,
+    marginBottom: 8,
   },
   inputShadow: {
     borderRadius: 14,
@@ -194,13 +188,11 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.card,
     borderRadius: 14,
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 14,
     fontSize: 15,
-    color: colors.textPrimary,
   },
   addButton: {
-    marginTop: 12,
     backgroundColor: colors.darkPink,
     paddingVertical: 12,
     borderRadius: 14,
@@ -214,7 +206,6 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 16,
     borderRadius: 14,
     backgroundColor: colors.card,
     paddingHorizontal: 12,
@@ -247,10 +238,34 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
   },
+  limitHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
   limitText: {
     fontSize: 15,
+    fontWeight: '600',
     color: colors.textPrimary,
-    marginBottom: 12,
+  },
+  alertBox: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: colors.alertRed,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  alertText: {
+    color: '#FFF',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  counterText: {
+    fontSize: 12,
+    color: colors.textTertiary,
+    marginBottom: 8,
   },
   actions: {
     flexDirection: 'row',
