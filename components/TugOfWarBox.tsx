@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import TugOfWar from './TugOfWar';
+import ProfileCircle from './ProfileCircle';
 
 const colors = {
   card: '#FFFFFF',
@@ -18,8 +19,11 @@ const TugOfWarBox = () => {
     <View style={styles.shadowWrapper}>
       <View style={styles.card}>
         <View style={styles.header}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.eyebrow}>Resumen del mes</Text>
+          <View style={styles.headerLeft}>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.eyebrow}>Resumen del mes</Text>
+          </View>
+          <ProfileCircle initial="N" hasStories={true} />
         </View>
 
         <View style={styles.metrics}>
@@ -52,7 +56,13 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 12,
+  },
+  headerLeft: {
+    flexDirection: 'column',
   },
   eyebrow: {
     fontSize: 11,
