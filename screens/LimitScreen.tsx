@@ -8,12 +8,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
-  Dimensions,
 } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import type { RootStackParamList } from '../navigation/RootStack';
+import { Ionicons } from '@expo/vector-icons';
 
 const colors = {
   card: '#FFFFFF',
-  textPrimary: '#C97A7A', // nombre del límite
+  textPrimary: '#C97A7A',
   textSecondary: '#6B7280',
   textTertiary: '#9CA3AF',
   alertRed: '#C97A7A',
@@ -28,12 +30,11 @@ interface Limit {
 }
 
 export default function LimitsScreen() {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const [input, setInput] = useState('');
   const [limits, setLimits] = useState<Limit[]>([]);
   const [search, setSearch] = useState('');
-
-  const TAB_HEIGHT = 80;
-  const SCREEN_HEIGHT = Dimensions.get('window').height;
 
   const addLimit = () => {
     if (!input.trim()) return;
@@ -67,15 +68,19 @@ export default function LimitsScreen() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={[styles.clipContainer, { height: SCREEN_HEIGHT - TAB_HEIGHT }]}>
+      <View style={styles.clipContainer}>
         {/* HEADER */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Mis límites</Text>
+          <View style={styles.titleRow}>
+            <TouchableOpacity onPress={() => navigation.replace('Tabs')} style={styles.backButton}>
+              <Ionicons name="chevron-back" size={28} color={colors.darkPink} />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Mis límites</Text>
+          </View>
           <Text style={styles.subtitle}>Define tus líneas rojas que nadie debe cruzar.</Text>
 
-          {/* Sección compacta: primer input + botón añadir + segundo input */}
           <View style={{ marginBottom: 16 }}>
             <View style={styles.inputShadow}>
               <TextInput
@@ -115,13 +120,14 @@ export default function LimitsScreen() {
           data={filteredLimits}
           keyExtractor={item => item.id.toString()}
           contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          contentInsetAdjustmentBehavior="automatic"
           ListEmptyComponent={
             <Text style={styles.emptyText}>Aún no has añadido ningún límite.</Text>
           }
           ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
           renderItem={({ item }) => (
             <View style={styles.limitCard}>
-              {/* Nombre del límite + alerta a la derecha */}
               <View style={styles.limitHeader}>
                 <Text style={styles.limitText}>{item.text}</Text>
                 <View style={styles.alertBox}>
@@ -129,7 +135,6 @@ export default function LimitsScreen() {
                 </View>
               </View>
 
-              {/* Contador compacto */}
               <Text style={styles.counterText}>
                 Defendido: {item.defendedCount || 0} · No defendido: {item.notDefendedCount || 0}
               </Text>
@@ -163,14 +168,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 20,
     marginBottom: 12,
-    flexDirection: 'column', // mantiene flujo vertical
+    flexDirection: 'column',
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  backButton: {
+    marginRight: 6,   // separacion entre icono y titulo
+    marginLeft: -4,   // desplaza el < hacia la izquierda para alinear con 'Define'
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     letterSpacing: 0.2,
-    color: '#B22255', // nuevo color
-    marginBottom: 4,
+    color: '#B22255',
   },
   subtitle: {
     fontSize: 14,

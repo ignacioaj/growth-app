@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, StyleSheet, ImageBackground } from 'react-native';
-import TabNavigator from './components/TabNavigator';
+import RootStack from './navigation/RootStack'; // <- usamos el stack raíz
 
 const AppTheme = {
   ...DefaultTheme,
@@ -17,17 +17,15 @@ const AppTheme = {
   },
 };
 
-// Componente que envuelve el contenido usando los insets
 const SafeAreaWrapper: React.FC = ({ children }) => {
   const insets = useSafeAreaInsets();
-
   return (
     <View
       style={[
         styles.overlay,
         {
-          paddingTop: insets.top + 24, // Ajuste dinámico para la navbar
-          paddingBottom: insets.bottom, // Evita que quede debajo del home indicator
+          paddingTop: insets.top + 24,
+          paddingBottom: insets.bottom,
         },
       ]}
     >
@@ -47,7 +45,7 @@ export default function App() {
         <SafeAreaWrapper>
           <NavigationContainer theme={AppTheme}>
             <StatusBar style="dark" />
-            <TabNavigator />
+            <RootStack /> {/* Ahora toda la app está dentro del stack */}
           </NavigationContainer>
         </SafeAreaWrapper>
       </ImageBackground>

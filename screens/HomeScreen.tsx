@@ -19,9 +19,9 @@ const colors = {
   textPrimary: '#1F2933',
   textSecondary: '#6B7280',
   textTertiary: '#9CA3AF',
-  calmGreen: '#6BD17F', // verde TugOfWar
+  calmGreen: '#6BD17F',
   trustBlue: '#6B8EF2',
-  softRed: '#B00020',   // rojo TugOfWar
+  softRed: '#B00020',
   darkPink: '#8B1E3F',
 };
 
@@ -69,6 +69,7 @@ export default function HomeScreen() {
             <TugOfWarBox />
           </View>
 
+          {/* GrowthRow: ahora puede navegar a LimitScreen */}
           <View style={styles.section}>
             <GrowthRow />
           </View>
@@ -117,13 +118,15 @@ export default function HomeScreen() {
         </View>
       </KeyboardAvoidingView>
 
+      {/*
       <ConfirmModal
         visible={modalVisible}
         type={selectedType}
-        message={inputText}  // <-- pasamos el comentario aquí
+        message={inputText} // <-- pasamos el comentario aquí
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
+      */}
     </>
   );
 }

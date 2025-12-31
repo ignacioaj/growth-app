@@ -1,17 +1,17 @@
-// components/GrowthBox.tsx
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type GrowthBoxProps = {
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   color: string;
   label: string;
+  onPress?: () => void; // nueva prop para manejar el tap
 };
 
-export default function GrowthBox({ icon, color, label }: GrowthBoxProps) {
+export default function GrowthBox({ icon, color, label, onPress }: GrowthBoxProps) {
   return (
-    <View style={styles.wrapper}>
+    <Pressable onPress={onPress} style={styles.wrapper}>
       <View style={[styles.box, { backgroundColor: color }]}>
         <View style={styles.overlay} />
         <MaterialCommunityIcons
@@ -24,7 +24,7 @@ export default function GrowthBox({ icon, color, label }: GrowthBoxProps) {
       <Text style={styles.label} numberOfLines={2}>
         {label}
       </Text>
-    </View>
+    </Pressable>
   );
 }
 

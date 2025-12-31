@@ -46,11 +46,11 @@ export default function TabNavigator() {
       />
 
       <Tab.Screen
-        name="Límites"
-        component={LimitScreen}
+        name="Diario"
+        component={RecordScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="pan-tool" size={size} color={color} />
+            <MaterialIcons name="menu-book" size={size} color={color} />
           ),
         }}
       />
@@ -66,16 +66,6 @@ export default function TabNavigator() {
       />
 
       <Tab.Screen
-        name="Diario"
-        component={RecordScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="menu-book" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
         name="Progreso"
         component={RecordScreen}
         options={{
@@ -84,6 +74,17 @@ export default function TabNavigator() {
           ),
         }}
       />
+
+      <Tab.Screen
+        name="Perfil"
+        component={RecordScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="person" size={size} color={color} />
+          ),
+        }}
+      />
+
     </Tab.Navigator>
   );
 }
