@@ -39,7 +39,7 @@ export default function GrowthRow() {
         />
 
         <GrowthBox
-          icon="shoe-print"
+          icon="foot-print"
           color={colors.trustBlue}
           label="Salir de mi zona de comfort"
           onPress={() => navigation.replace('ComfortScreen')}
