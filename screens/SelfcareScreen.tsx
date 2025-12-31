@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Modal,
 } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../navigation/RootStack';
@@ -39,6 +40,7 @@ export default function SelfcareScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedType, setSelectedType] = useState('');
   const [entries, setEntries] = useState<SelfcareEntry[]>([]);
+  const [helpVisible, setHelpVisible] = useState(false);
 
   const handlePress = (type: string) => {
     setSelectedType(type);
@@ -96,8 +98,8 @@ export default function SelfcareScreen() {
               placeholderTextColor={colors.textTertiary}
               value={inputText}
               onChangeText={setInputText}
-              multiline={true}
-              blurOnSubmit={true}
+              multiline
+              blurOnSubmit
               returnKeyType="done"
             />
           </View>
@@ -122,15 +124,53 @@ export default function SelfcareScreen() {
           </View>
         </View>
 
-        {/* Botones pequeños */}
+        {/* Botones pequeños con icono alineado */}
         <View style={styles.section}>
-          <Text style={styles.label}>¿Has realizado algún tipo de cuidado?</Text>
-          <View style={styles.smallButtonsRow}>
-            <SmallButton text="Capricho" onPress={() => handlePress("Capricho")} />
-            <SmallButton text="Higiene" onPress={() => handlePress("Higiene")} />
-            <SmallButton text="Orden" onPress={() => handlePress("Orden")} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+            <Text style={styles.label}>¿Has realizado algún tipo de cuidado?</Text>
+            <TouchableOpacity
+              onPress={() => setHelpVisible(true)}
+              style={{ marginLeft: 'auto', marginTop: -2 }}
+            >
+              <Ionicons
+                name="information-circle"
+                size={20}
+                color={colors.darkPink}
+              />
+            </TouchableOpacity>
           </View>
+
+          <ReactionButton
+            type="Autocuidado"
+            subtitle="Tomaste acción para mejorar tu bienestar."
+            color={colors.softRed}
+            onPress={handlePress}
+          />
         </View>
+
+        {/* Modal de aclaración */}
+        <Modal
+          transparent
+          visible={helpVisible}
+          animationType="fade"
+          onRequestClose={() => setHelpVisible(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPressOut={() => setHelpVisible(false)}
+          >
+            <View style={styles.tooltip}>
+              <Text style={styles.tooltipText}>
+                Puede incluir actividades como hacer deporte, meditar, descansar, cuidar tu estética o higiene,
+                ordenar tu espacio, o simplemente darte un capricho.
+              </Text>
+              <TouchableOpacity onPress={() => setHelpVisible(false)}>
+                <Text style={[styles.tooltipClose, { marginRight: 8, paddingTop: 12 }]}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
 
         {/* Lista de entradas */}
         {entries.length > 0 && (
@@ -173,12 +213,6 @@ const ReactionButton = ({ type, subtitle, color, onPress }) => (
   </TouchableOpacity>
 );
 
-const SmallButton = ({ text, onPress }) => (
-  <TouchableOpacity style={styles.smallButton} onPress={onPress} activeOpacity={0.85}>
-    <Text style={styles.smallButtonText}>{text}</Text>
-  </TouchableOpacity>
-);
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 16 },
   header: { paddingTop: 20 },
@@ -209,7 +243,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   reactionsColumn: { flexDirection: 'column' },
-  smallButtonsRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
   reactionCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -226,20 +259,6 @@ const styles = StyleSheet.create({
   reactionDot: { width: 8, height: 8, borderRadius: 4, marginRight: 10 },
   reactionTitle: { fontSize: 15, fontWeight: '600', color: colors.textPrimary },
   reactionSubtitle: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
-  smallButton: {
-    flex: 1,
-    backgroundColor: colors.card,
-    borderRadius: 14,
-    paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
-    elevation: 2,
-  },
-  smallButtonText: { fontSize: 14, fontWeight: '600', color: colors.textPrimary },
   entryCard: {
     backgroundColor: colors.card,
     borderRadius: 14,
@@ -253,4 +272,29 @@ const styles = StyleSheet.create({
   },
   entryType: { fontSize: 15, fontWeight: '700', color: colors.textPrimary, marginBottom: 4 },
   entryComment: { fontSize: 14, color: colors.textSecondary },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  tooltip: {
+    backgroundColor: colors.card,
+    padding: 16,
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+    marginHorizontal: 16
+  },
+  tooltipText: { fontSize: 13, color: colors.textSecondary, lineHeight: 18 },
+  tooltipClose: {
+    color: colors.darkPink,
+    marginTop: 12,
+    fontWeight: '600',
+    textAlign: 'right',
+    fontSize: 14,
+  },
 });
